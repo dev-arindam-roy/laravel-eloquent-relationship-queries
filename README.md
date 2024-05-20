@@ -131,6 +131,19 @@ $purchaseProduct = PurchaseProduct::with([
 ### relation of relations - with of withs
 
 ```php
+$data = ProcurementItems::with(['procurement' => function($itemQry) {
+    $itemQry->with(['cartOrders' => function($cartQry) {
+        $cartQry->with(['cartItems' => function($cartItmQry) {
+            $cartItmQry->with(['productVariant']);
+        }]);
+    }]);
+}])
+->where('procurement_id', $procurementId)
+->orderBy('id', 'desc')
+->get();
+```
+
+```php
 $dataBag['data'] = Sale::with([
     'customerInfo' => function ($userInfoQry) {
         $userInfoQry->with(['userProfile']);
