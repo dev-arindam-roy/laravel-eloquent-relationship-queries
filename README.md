@@ -228,3 +228,28 @@ $dataBag['data'] = Cart::with([
 ->orderBy('id', 'desc')
 ->paginate(25);
 ```
+
+```php
+$participants = Student::select(
+        ['id', 'parent_id', 'mentor_id', 'first_name', 'last_name', 'grade', 'age']
+    )->where([
+        ['id', $studentId]
+    ])->with(['parent:id,first_name,last_name,email,home_phone'])
+    ->first();
+
+
+$camp = Tranning::where([
+            ['id', $tranningId],
+            ['mentor_id', Auth::guard('web')->user()->id],
+        ])
+        ->whereNull('deleted_at')
+        ->with(['students' => function ($query) {
+                $query->where([
+                    ['join_list', 0],
+                    ['active', 1],
+                ])
+                ->whereNull('deleted_at');
+            }
+        ])
+        ->first();
+```
